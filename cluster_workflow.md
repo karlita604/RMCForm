@@ -80,9 +80,11 @@ ssh -i C:\Users\kvrlv\.ssh\id_ed25519 gonzalez@137.94.124.1
 
 # 2. Get a compute node
 srun --pty --partition=dgxh100short bash
+salloc --partition=dgxh100short --gres=gpu:1 --time=00:30:00 --mem=16G
+
 
 # 3. Activate env
-source ~/rmc_env/bin/activate
+conda activate rmc1
 
 # 4. Run
 cd ~/karla/rmc_hands_on/session1/starter
@@ -98,3 +100,29 @@ sinfo                   # see all nodes and their status
 scancel <JOBID>         # cancel a job
 nvidia-smi              # check GPU usage (run on compute node)
 ```
+
+---
+
+## Use sbactch with a script
+```bash
+#!/bin/bash
+#SBATCH --job-name=rmc_train
+#SBATCH --partition=dgxh100short
+#SBATCH --gres=gpu:1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=32G
+#SBATCH --time=04:00:00
+#SBATCH --output=~/logs/%x_%j.txt
+
+conda activate rmc
+cd ~/karla/rmc_hands_on/session1/starter
+python train.py
+```
+
+Then submit
+```
+mkdir -p ~/logs
+sbatch train.sh
+```
+You can now logout and keep running.
+

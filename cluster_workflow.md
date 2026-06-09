@@ -4,6 +4,7 @@
 ```bash
 ssh -i C:\Users\kvrlv\.ssh\id_ed25519 gonzalez@137.94.124.1
 ```
+TODO: Lets make a script that will log in for us such that we only say "ssh login1"
 
 ## 2. Check what's available
 ```bash
@@ -16,6 +17,22 @@ Key partitions:
 | dgxh100mid | 5 days | H100 | For longer runs |
 | dgxv100short | 8 hrs | V100 | Often busy |
 | lsrcpushort | 8 hrs | CPU only | No GPU |
+
+| Partition    | Availability | Time Limit | Nodes | State | Node List              |
+| ------------ | ------------ | ---------- | ----- | ----- | ---------------------- |
+| gtx1080*     | up           | infinite   | 5     | down* | MCSDLC-GTX1080-[01-05] |
+| gtx1080*     | up           | infinite   | 7     | unk*  | MCSDLC-GTX1080-[06-12] |
+| test         | up           | infinite   | 1     | down* | MCSDLC-TEST-1          |
+| lsrcpushort  | up           | 8:00:00    | 2     | idle  | MCSDLC-LSR-CPU-[1-2]   |
+| lsrcpumid    | up           | 5-00:00:00 | 2     | idle  | MCSDLC-LSR-CPU-[1-2]   |
+| lsrcpulong   | up           | infinite   | 2     | idle  | MCSDLC-LSR-CPU-[1-2]   |
+| dgxv100short | up           | 8:00:00    | 1     | idle  | MCSDLC-DGX-V100-1      |
+| dgxv100mid   | up           | 5-00:00:00 | 1     | idle  | MCSDLC-DGX-V100-1      |
+| dgxv100long  | up           | infinite   | 1     | idle  | MCSDLC-DGX-V100-1      |
+| dgxh100short | up           | 8:00:00    | 1     | idle  | MCSDLC-DGX-H100-1      |
+| dgxh100mid   | up           | 5-00:00:00 | 1     | idle  | MCSDLC-DGX-H100-1      |
+| dgxh100long  | up           | infinite   | 1     | idle  | MCSDLC-DGX-H100-1      |
+
 
 ## 3. Get an interactive session on a GPU node
 ```bash
@@ -41,10 +58,11 @@ conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/ma
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
 ```
 
-### Create the rmc env (first time only)
+### Create the rmc1 env (first time only)
 ```bash
-conda create -n rmc python=3.12 -y
-conda activate rmc
+conda create -n rmc1 python=3.12 -y
+conda activate rmc1
+pip install -r ~/karla/rmc_hands_on/session1/requirements.txt
 pip install torch
 pip install accelerate transformers datasets evaluate scikit-learn wandb huggingface_hub
 ```
@@ -53,20 +71,6 @@ pip install accelerate transformers datasets evaluate scikit-learn wandb hugging
 ```bash
 conda activate rmc
 ```
-
-## 5. Run your script
-```bash
-cd ~/karla/rmc_hands_on/session1/starter
-python train.py
-```
-
-## 6. Exit when done
-```bash
-exit  # leaves the compute node, back to login node
-exit  # leaves the cluster entirely
-```
-
----
 
 ## Every time you want to run a script
 
